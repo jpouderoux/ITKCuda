@@ -46,13 +46,11 @@ void CudaImageDataManager< ImageType >::SetImagePointer(ImageType* img)
   m_GPUBufferedRegionIndex = CudaDataManager::New();
   m_GPUBufferedRegionIndex->SetBufferSize(sizeof(int) * ImageDimension);
   m_GPUBufferedRegionIndex->SetCPUBufferPointer(m_BufferedRegionIndex);
-  //m_GPUBufferedRegionIndex->SetBufferFlag(CL_MEM_READ_ONLY);
   m_GPUBufferedRegionIndex->Allocate();
 
   m_GPUBufferedRegionSize = CudaDataManager::New();
   m_GPUBufferedRegionSize->SetBufferSize(sizeof(int) * ImageDimension);
   m_GPUBufferedRegionSize->SetCPUBufferPointer(m_BufferedRegionSize);
-  //m_GPUBufferedRegionSize->SetBufferFlag(CL_MEM_READ_ONLY);
   m_GPUBufferedRegionSize->Allocate();
 }
 
@@ -77,7 +75,7 @@ void CudaImageDataManager< ImageType >::MakeCPUBufferUpToDate()
       {
       cudaError_t errid;
 #ifdef VERBOSE
-      std::cout << "Cuda->CPU data copy" << std::endl;
+      std::cout << "GPU->CPU data copy" << std::endl;
 #endif
       errid = cudaMemcpy(m_CPUBuffer, m_GPUBuffer->GetPointer(), m_BufferSize, cudaMemcpyDeviceToHost);
       CudaCheckError(errid, __FILE__, __LINE__, ITK_LOCATION);
@@ -114,7 +112,7 @@ void CudaImageDataManager< ImageType >::MakeGPUBufferUpToDate()
       {
       cudaError_t errid;
 #ifdef VERBOSE
-      std::cout << "CPU->Cuda data copy" << std::endl;
+      std::cout << "CPU->GPU data copy" << std::endl;
 #endif
       errid = cudaMemcpy(m_GPUBuffer->GetPointer(), m_CPUBuffer, m_BufferSize, cudaMemcpyHostToDevice);
       CudaCheckError(errid, __FILE__, __LINE__, ITK_LOCATION);
@@ -132,13 +130,7 @@ void CudaImageDataManager< ImageType >::MakeGPUBufferUpToDate()
 template < class ImageType >
 void CudaImageDataManager< ImageType >::Graft(const CudaDataManager* data)
 {
-  //std::cout << "GPU timestamp : " << this->GetMTime() << ", CPU timestamp : "
-  // << m_Image->GetMTime() << std::endl;
-
   Superclass::Graft(data);
-
-  //std::cout << "GPU timestamp : " << this->GetMTime() << ", CPU timestamp : "
-  // << m_Image->GetMTime() << std::endl;
 }
 
 } // namespace itk

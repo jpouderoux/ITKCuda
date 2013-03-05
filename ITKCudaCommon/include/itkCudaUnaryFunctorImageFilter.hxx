@@ -34,7 +34,7 @@ CudaUnaryFunctorImageFilter< TInputImage, TOutputImage, TFunction, TParentImageF
 template< class TInputImage, class TOutputImage, class TFunction, class TParentImageFilter >
 void
 CudaUnaryFunctorImageFilter< TInputImage, TOutputImage, TFunction, TParentImageFilter >
-::CudaGenerateData()
+::GPUGenerateData()
 {
   // Applying functor using Cuda kernel
   typedef typename itk::CudaTraits< TInputImage >::Type  CudaInputImage;
