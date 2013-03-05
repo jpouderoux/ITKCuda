@@ -26,7 +26,18 @@ namespace itk
 {
 CudaKernelManager::CudaKernelManager()
 {
+  m_Program = 0;
   m_Manager = CudaContextManager::GetInstance();
+}
+
+CudaKernelManager::~CudaKernelManager()
+{
+  if (m_Program)
+    {
+    CUDA_CHECK(cuModuleUnload(m_Program));
+    m_Program = 0;
+    }
+  m_KernelContainer.clear();
 }
 
 bool CudaKernelManager::LoadProgramFromFile(const char* filename)
@@ -90,57 +101,6 @@ int CudaKernelManager::CreateKernel(const char* kernelName, const std::type_info
   std::stringstream s;
   s << kernelName << "_" << GetTypename(type);
   return CreateKernel(s.str().c_str());
-}
-
-int CudaKernelManager::GetKernelWorkGroupInfo(int kernelIdx,
-                                                int paramName, void *value)
-{
-  cudaError_t errid = cudaSuccess;
-  /*size_t valueSize, valueSizeRet;
-
-  switch (paramName)
-    {
-    case CL_KERNEL_WORK_GROUP_SIZE:
-      valueSize = sizeof(size_t);
-      break;
-    case CL_KERNEL_COMPILE_WORK_GROUP_SIZE:
-      valueSize = 3 * sizeof(size_t);
-      break;
-    case CL_KERNEL_LOCAL_MEM_SIZE:
-      valueSize = sizeof(cl_ulong);
-      break;
-    default:
-      itkGenericExceptionMacro (<< "Unknown type of work goup information");
-      break;
-    }
-
-  errid = clGetKernelWorkGroupInfo(m_KernelContainer[kernelIdx], m_Manager->GetDeviceId(0),
-                                          paramName, valueSize, value, &valueSizeRet);
-
-  CudaCheckError(errid, __FILE__, __LINE__, ITK_LOCATION);*/
-
-  return errid;
-}
-
-int CudaKernelManager::GetDeviceInfo(
-                     int paramName,
-                     size_t argSize, void *argValue)
-{
-  cudaError_t errid = cudaSuccess;
-  /*
-  switch (paramName)
-    {
-    case CL_DEVICE_MAX_WORK_ITEM_SIZES:
-      errid = clGetDeviceInfo(m_Manager->GetDeviceId(0),
-        CL_DEVICE_MAX_WORK_ITEM_SIZES, argSize, argValue, NULL);
-      break;
-    default:
-      itkGenericExceptionMacro (<< "Unknown type of device info");
-      break;
-    }
-  CudaCheckError(errid, __FILE__, __LINE__, ITK_LOCATION);*/
-
-  return errid;
 }
 
 bool CudaKernelManager::PushKernelArg(int kernelIdx, const void* argVal)

@@ -125,10 +125,6 @@ unsigned int CudaReduction< TElement >
     
   unsigned int handle = this->m_CudaKernelManager->CreateKernel(kernelName.str().c_str(), typeid(TElement));
 
-  //size_t wgSize;
-  ///cl_int ciErrNum = this->m_CudaKernelManager->GetKernelWorkGroupInfo(handle, CL_KERNEL_WORK_GROUP_SIZE, &wgSize);
-  //CudaCheckError(ciErrNum, __FILE__, __LINE__, ITK_LOCATION);
-
   m_SmallBlock = 0; //(wgSize == 64);
 
   // NOTE: the program will get deleted when the kernel is also released

@@ -61,12 +61,7 @@ public:
   int CreateKernel(const char* kernelName);
 
   int CreateKernel(const char* kernelName, const std::type_info&);
-
-  int GetKernelWorkGroupInfo(int kernelIdx,
-                             int paramName, void *value);
-
-  int GetDeviceInfo(int paramName, size_t argSize, void *argValue);
-
+  
   bool PushKernelArg(int kernelIdx, const void* argVal);
   
   void ClearKernelArgs(int kernelIdx);
@@ -82,10 +77,6 @@ public:
   }
   
   /** Pass to Cuda both the pixel buffer and the buffered region. */
-  //template< class TCudaImageDataManager >
-  //bool SetKernelArgWithImageAndBufferedRegion(int kernelIdx, int argIdx,
-  //  typename TCudaImageDataManager::Pointer manager);
-
   template< class TCudaImageDataManager >
   bool SetKernelArgWithImageAndBufferedRegion(
     int kernelIdx, int &argIdx,
@@ -118,8 +109,7 @@ public:
 
 protected:
   CudaKernelManager();
-  virtual ~CudaKernelManager() {
-  }
+  virtual ~CudaKernelManager();
 
   bool CheckArgumentReady(int kernelIdx);
 
@@ -135,7 +125,7 @@ private:
 
   CudaContextManager * m_Manager;
 
-  std::vector< CUfunction >                         m_KernelContainer;
+  std::vector< CUfunction >                        m_KernelContainer;
   std::vector< std::vector< KernelArgumentList > > m_KernelArgumentReady;
 };
 }
