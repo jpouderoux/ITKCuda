@@ -98,7 +98,7 @@ public:
   virtual void UpdateGPUBuffer();
 
   void Allocate();
-  
+
   /** Synchronize CPU and Cuda buffers (using dirty flags) */
   bool Update();
 
@@ -150,10 +150,10 @@ protected:
 class GPUMemPointer
 {
 public:
-  GPUMemPointer() : m_GPUBuffer(0), m_bufferSize(0) 
+  GPUMemPointer() : m_GPUBuffer(0), m_bufferSize(0)
   {
   }
-    
+
   void Allocate(size_t bufferSize)
   {
     m_bufferSize = bufferSize;
@@ -162,9 +162,10 @@ public:
 
   ~GPUMemPointer()
   {
-    if(m_GPUBuffer) 
+    if(m_GPUBuffer)
       {
       CUDA_CHECK(cudaFree(m_GPUBuffer));
+      m_GPUBuffer = 0;
       }
   }
 

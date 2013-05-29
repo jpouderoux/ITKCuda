@@ -48,10 +48,10 @@ public:
   itkTypeMacro(CudaInPlaceImageFilter, CudaImageToImageFilter);
 
   /** Superclass typedefs. */
-  typedef typename CudaSuperclass::OutputImageType       OutputImageType;
-  typedef typename CudaSuperclass::OutputImagePointer    OutputImagePointer;
-  typedef typename CudaSuperclass::OutputImageRegionType OutputImageRegionType;
-  typedef typename CudaSuperclass::OutputImagePixelType  OutputImagePixelType;
+  typedef typename GPUSuperclass::OutputImageType       OutputImageType;
+  typedef typename GPUSuperclass::OutputImagePointer    OutputImagePointer;
+  typedef typename GPUSuperclass::OutputImageRegionType OutputImageRegionType;
+  typedef typename GPUSuperclass::OutputImagePixelType  OutputImagePixelType;
 
   /** ImageDimension constants */
   itkStaticConstMacro(InputImageDimension, unsigned int, TInputImage::ImageDimension);

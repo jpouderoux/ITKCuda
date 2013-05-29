@@ -36,14 +36,14 @@ void
 CudaUnaryFunctorImageFilter< TInputImage, TOutputImage, TFunction, TParentImageFilter >
 ::GPUGenerateData()
 {
-  // Applying functor using Cuda kernel
-  typedef typename itk::CudaTraits< TInputImage >::Type  CudaInputImage;
-  typedef typename itk::CudaTraits< TOutputImage >::Type CudaOutputImage;
+    // Applying functor using GPU kernel
+  typedef typename itk::CudaTraits< TInputImage >::Type  GPUInputImage;
+  typedef typename itk::CudaTraits< TOutputImage >::Type GPUOutputImage;
 
-  typename CudaInputImage::Pointer  inPtr =  dynamic_cast< CudaInputImage * >(this->ProcessObject::GetInput(0));
-  typename CudaOutputImage::Pointer otPtr =  dynamic_cast< CudaOutputImage * >(this->ProcessObject::GetOutput(0));
+  typename GPUInputImage::Pointer  inPtr =  dynamic_cast< GPUInputImage * >( this->ProcessObject::GetInput(0) );
+  typename GPUOutputImage::Pointer otPtr =  dynamic_cast< GPUOutputImage * >( this->ProcessObject::GetOutput(0) );
 
-  typename CudaOutputImage::SizeType outSize = otPtr->GetLargestPossibleRegion().GetSize();
+  typename GPUOutputImageGPUOutputImage::SizeType outSize = otPtr->GetLargestPossibleRegion().GetSize();
 
   int imgSize[3] = { 1, 1, 1 };
 
@@ -59,7 +59,7 @@ CudaUnaryFunctorImageFilter< TInputImage, TOutputImage, TFunction, TParentImageF
   for (int i = 0; i < ImageDim; i++)
     {
     // total # of threads
-    globalSize[i] = localSize[i]*(unsigned int)ceil((float)outSize[i]/(float)localSize[i]); 
+    globalSize[i] = localSize[i]*(unsigned int)ceil((float)outSize[i]/(float)localSize[i]);
     }
 
   // arguments set up using Functor

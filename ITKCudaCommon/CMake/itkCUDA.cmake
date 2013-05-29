@@ -4,20 +4,20 @@ if(ITK_USE_CUDA)
   if(NOT ${CUDA_FOUND})
      message(FATAL "Could not find CUDA")
   endif()
-  
+
   macro(generate_cuda_ptx_wrappers KERNELSPTX KERNELSCXX)
-    
+
     set(PTX_FILES "")
     set(CU_FILES "")
-        
+
     foreach(file ${ARGN})
       if(${file} MATCHES ".*\\.cu$")
         list(APPEND CU_FILES ${file})
       endif()
     endforeach()
-    
+
     CUDA_COMPILE_PTX(KernelsPTX ${CU_FILES})
-        
+
     foreach(file ${KernelsPTX})
       if(${file} MATCHES ".*\\.ptx$")
         get_filename_component(FilterName ${file} NAME_WE)
@@ -27,21 +27,22 @@ if(ITK_USE_CUDA)
           "${CMAKE_CURRENT_BINARY_DIR}/${KernelName}CudaKernel.cxx")
       endif()
     endforeach()
-    
+
     add_custom_command(
       OUTPUT ${CUDAKERNELS}
       DEPENDS ${PTX_FILES}
       COMMAND ${CMAKE_COMMAND} ARGS
         -D "_BUILD_CUDA_KERNEL=TRUE"
         -D "PTXKernels:STRING=${PTX_FILES}"
-        -P "${CMAKE_SOURCE_DIR}/Modules/External/ITKCudaCommon/CMake/itkCUDA.cmake" # call to itself!
+        #-P "${CMAKE_SOURCE_DIR}/Modules/External/ITKCudaCommon/CMake/itkCUDA.cmake" # call to itself!
+        -P "${ITK_CUDA_PATH}/CMake/itkCUDA.cmake" # call to itself!
       WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
       COMMENT "Building CUDA PTX wrappers"
     )
     set_source_files_properties(${CUDAKERNELS} PROPERTIES GENERATED TRUE)
     set(${KERNELSPTX} ${KernelsPTX})
     set(${KERNELSCXX} ${CUDAKERNELS})
-  endmacro()  
+  endmacro()
 endif()
 
 # Script called to generate a CUDA PTX Source file
@@ -58,12 +59,12 @@ macro(sourcefile_to_string SOURCE_FILE RESULT_CMAKE_VAR)
    endforeach()
 endmacro()
 
-macro(write_cuda_ptx_kernel_to_file PTX_FILE GPUFILTER_NAME GPUFILTER_KERNELNAME
-   OUTPUT_FILE SRC_VAR)
+macro(write_cuda_ptx_kernel_to_file NAMESPACE PTX_FILE GPUFILTER_NAME GPUFILTER_KERNELNAME
+   OUTPUT_FILE)
   sourcefile_to_string(${PTX_FILE} ${GPUFILTER_KERNELNAME}_SourceString)
   set(${GPUFILTER_KERNELNAME}_KernelString
-    "#include \"itk${GPUFILTER_NAME}.h\"
-    namespace itk
+    "#include \"${NAMESPACE}${GPUFILTER_NAME}.h\"
+    namespace ${NAMESPACE}
     {
     std::string ${GPUFILTER_KERNELNAME}::GetCudaPTXSource()
     {
@@ -83,7 +84,7 @@ macro(write_cuda_ptx_kernels GPUKernels GPU_SRC)
     get_filename_component(FilterName ${GPUKernel} NAME_WE)
     string(REGEX REPLACE ".*generated_" "" KernelName ${FilterName})
     message(STATUS "Writing CUDA PTX kernel wrapper ${KernelName}CudaKernel.cxx")
-    write_cuda_ptx_kernel_to_file(${GPUKernel} ${KernelName} ${KernelName}Kernel "${KernelName}CudaKernel.cxx" ${GPU_SRC})
+    write_cuda_ptx_kernel_to_file(${KernelName} ${GPUKernel} ${KernelName}Kernel "${KernelName}CudaKernel.cxx" ${GPU_SRC})
   endforeach()
 endmacro()
 

@@ -38,7 +38,6 @@ CudaContextManager* CudaContextManager::GetInstance()
 
 void CudaContextManager::DestroyInstance()
 {
-  std::cout << "Context is destroyed" << std::endl;
   delete m_Instance;
   m_Instance = NULL;
 }
@@ -64,7 +63,7 @@ CudaContextManager::CudaContextManager()
   m_DeviceIdx = itk::CudaGetMaxFlopsDev();
 
   CUDA_CHECK(cuDeviceGet(&device, m_DeviceIdx));
-  
+
   CUDA_CHECK(cuCtxCreate(&context, CU_CTX_SCHED_AUTO, device));
 
   CUDA_CHECK(cuCtxSetCurrent(context));

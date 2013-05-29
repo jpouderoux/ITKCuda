@@ -24,7 +24,7 @@ namespace itk
 {
 
 template< class TInputImage, class TOutputImage, class TParentImageFilter >
-CudaImageToImageFilter< TInputImage, TOutputImage, TParentImageFilter >::CudaImageToImageFilter() : m_CudaEnabled(true)
+CudaImageToImageFilter< TInputImage, TOutputImage, TParentImageFilter >::CudaImageToImageFilter() : m_GPUEnabled(true)
 {
   m_CudaKernelManager = CudaKernelManager::New();
 }
@@ -40,14 +40,14 @@ CudaImageToImageFilter< TInputImage, TOutputImage, TParentImageFilter >::PrintSe
                                                                                   Indent indent) const
 {
   Superclass::PrintSelf(os, indent);
-  os << indent << "GPU: " << (m_CudaEnabled ? "Enabled" : "Disabled") << std::endl;
+  os << indent << "GPU: " << (m_GPUEnabled ? "Enabled" : "Disabled") << std::endl;
 }
 
 template< class TInputImage, class TOutputImage, class TParentImageFilter >
 void
 CudaImageToImageFilter< TInputImage, TOutputImage, TParentImageFilter >::GenerateData()
 {
-  if (!m_CudaEnabled) // call CPU update function
+  if (!m_GPUEnabled) // call CPU update function
     {
     Superclass::GenerateData();
     }

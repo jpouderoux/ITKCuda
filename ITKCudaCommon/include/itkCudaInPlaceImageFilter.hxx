@@ -45,7 +45,7 @@ void
 CudaInPlaceImageFilter< TInputImage, TOutputImage, TParentImageFilter >
 ::PrintSelf(std::ostream & os, Indent indent) const
 {
-  CudaSuperclass::PrintSelf(os, indent);
+  GPUSuperclass::PrintSelf(os, indent);
 }
 
 template< class TInputImage, class TOutputImage, class TParentImageFilter >

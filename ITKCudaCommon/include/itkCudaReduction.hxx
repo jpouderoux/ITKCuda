@@ -32,7 +32,7 @@ template< class TElement >
 CudaReduction< TElement >
 ::CudaReduction()
 {
-  /*** Prepare Cuda opencl program ***/
+  /*** Prepare Cuda GPU program ***/
   m_CudaKernelManager = CudaKernelManager::New();
   m_CudaDataManager = NULL;
 
@@ -109,7 +109,7 @@ unsigned int CudaReduction< TElement >
     itkExceptionMacro(<< "Reduction kernel undefined!");
     return 0;
     }
-    
+
   std::string CudaSource = CudaReduction::GetCudaPTXSource();
   // load and build program
   if (!this->m_CudaKernelManager->LoadProgramFromString(CudaSource.c_str()))
@@ -122,7 +122,7 @@ unsigned int CudaReduction< TElement >
 
   std::ostringstream kernelName;
   kernelName << "reduce" << whichKernel;
-    
+
   unsigned int handle = this->m_CudaKernelManager->CreateKernel(kernelName.str().c_str(), typeid(TElement));
 
   m_SmallBlock = 0; //(wgSize == 64);
@@ -169,7 +169,7 @@ TElement CudaReduction< TElement >
   int size = (1<<24) - 1917;    // number of elements to reduce
 
   this->InitializeKernel(size);
-  
+
   TElement* h_idata = new TElement[size];
 
   for (int i = 0; i < size; i++)
@@ -291,17 +291,17 @@ TElement CudaReduction< TElement >
 
   size_t globalSize = numBlocks * numThreads;
   size_t localSize = numThreads;
-  
+
   // when there is only one warp per block, we need to allocate two warps
   // worth of shared memory so that we don't index shared memory out of bounds
-  int sharedMemSize = (numThreads <= 32) ? 
-    2 * numThreads * sizeof(TElement) : 
+  int sharedMemSize = (numThreads <= 32) ?
+    2 * numThreads * sizeof(TElement) :
     numThreads * sizeof(TElement);
 
   // execute the kernel
-  this->m_CudaKernelManager->LaunchKernel1D(m_ReduceCudaKernelHandle, 
+  this->m_CudaKernelManager->LaunchKernel1D(m_ReduceCudaKernelHandle,
     globalSize, localSize, sharedMemSize);
-  
+
   odata->SetGPUDirtyFlag(false);
   odata->SetCPUDirtyFlag(true);
   odata->Update();
@@ -321,7 +321,7 @@ TElement CudaReduction< TElement >
   TElement CPUSum = this->CPUGenerateData(h_idata, n);
   std::cout << "CPU_VERIFY sum = " << CPUSum << std::endl;
 #endif
-  
+
   TElement gpu_result = 0;
   TElement c = 0;
   for (int i = 0; i < numBlocks; i++)

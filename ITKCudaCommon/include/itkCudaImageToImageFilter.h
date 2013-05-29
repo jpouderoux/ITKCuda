@@ -69,9 +69,9 @@ public:
   itkStaticConstMacro(OutputImageDimension, unsigned int, TOutputImage::ImageDimension);
 
   // macro to set if Cuda is used
-  itkSetMacro(CudaEnabled, bool);
-  itkGetConstMacro(CudaEnabled, bool);
-  itkBooleanMacro(CudaEnabled);
+  itkSetMacro(GPUEnabled, bool);
+  itkGetConstMacro(GPUEnabled, bool);
+  itkBooleanMacro(GPUEnabled);
 
   void GenerateData();
 
@@ -99,7 +99,7 @@ private:
   CudaImageToImageFilter(const Self &); //purposely not implemented
   void operator=(const Self &);        //purposely not implemented
 
-  bool m_CudaEnabled;
+  bool m_GPUEnabled;
 };
 
 } // end namespace itk

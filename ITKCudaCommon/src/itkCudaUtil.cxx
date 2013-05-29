@@ -89,7 +89,7 @@ int CudaGetMaxFlopsDev()
       max_flops_device = i;
       }
     }
-    
+
   return max_flops_device;
 }
 
@@ -125,7 +125,7 @@ void CudaPrintDeviceInfo(int device, bool verbose)
   std::cout << "Maximum Thread Dim: { " << prop.maxThreadsDim[0] << ", " << prop.maxThreadsDim[1] << ", " << prop.maxThreadsDim[2] << " }" << std::endl;
   std::cout << "Maximum Threads per Block: " << prop.maxThreadsPerBlock << std::endl;
   std::cout << "Maximum Grid Size: { " << prop.maxGridSize[0] << ", " << prop.maxGridSize[1] << ", " << prop.maxGridSize[2] << " }" << std::endl;
- 
+
   if (verbose)
   {
     /*cl_uint mem_align;
@@ -155,7 +155,7 @@ int CudaSelectPlatform(const char* name)
     std::cout << "Cuda Error : no device found!" << std::endl;
     return -1;
     }
-  
+
   for (int i = 0; i < numAvailableDevices; ++i)
     {
     if (!strcmp(devices[i].name, name))
@@ -163,7 +163,7 @@ int CudaSelectPlatform(const char* name)
       return i;
       }
     }
-  
+
   return -1;
 }
 
@@ -174,6 +174,7 @@ void CudaCheckError(cudaError_t error, const char* filename, int lineno, const c
     // print error message
     std::ostringstream errorMsg;
     errorMsg << "Cuda Error : " << cudaGetErrorString(error) << std::endl;
+    std::cerr << filename << ":" << lineno << " @ " << location << " : " << errorMsg.str() << std::endl;
     ::itk::ExceptionObject e_(filename, lineno, errorMsg.str().c_str(), location);
     throw e_;
     }
@@ -187,6 +188,7 @@ void CudaCheckError(CUresult error, const char* filename, int lineno, const char
     // print error message
     std::ostringstream errorMsg;
     errorMsg << "Cuda Error #" << static_cast<int>(error) << std::endl;
+    std::cerr << errorMsg.str() << std::endl;
     ::itk::ExceptionObject e_(filename, lineno, errorMsg.str().c_str(), location);
     throw e_;
     }

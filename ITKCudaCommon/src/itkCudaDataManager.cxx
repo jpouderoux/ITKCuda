@@ -51,7 +51,9 @@ void CudaDataManager::Allocate()
 #ifdef VERBOSE
     std::cout << this << "::Allocate Create GPU buffer of size " << m_BufferSize << " Bytes" << std::endl;
 #endif
+
     m_GPUBuffer->Allocate(m_BufferSize);
+    //std::cout << (void*)this << " allocated GPU buffer " << (void*) m_GPUBuffer->GetPointer() << " of size " << m_BufferSize << std::endl;
     m_IsGPUBufferDirty = true;
     }
 }
